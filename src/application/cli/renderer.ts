@@ -1,13 +1,8 @@
 import type { Session } from "../../domain/session.ts";
 import type { AttendanceStatus } from "../../usecase/get-status.ts";
+import { formatDate as date, formatTime as time } from "../../shared/format.ts";
 
 const pad = (value: number) => String(value).padStart(2, "0");
-const time = (value: Date) =>
-  `${pad(value.getHours())}:${pad(value.getMinutes())}:${
-    pad(value.getSeconds())
-  }`;
-const date = (value: Date) =>
-  `${value.getFullYear()}-${pad(value.getMonth() + 1)}-${pad(value.getDate())}`;
 const duration = (from: Date, to: Date) => {
   const minutes = Math.max(
     0,

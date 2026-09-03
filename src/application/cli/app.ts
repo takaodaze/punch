@@ -28,7 +28,7 @@ export class CliApp {
       while (true) {
         const key = await this.input.readKey();
         this.renderer.echo(key ?? "");
-        if (key === null || key === "q" || key === "\u0003") {
+        if (key === null || key === "q" || key === "") {
           this.renderer.goodbye();
           return;
         }

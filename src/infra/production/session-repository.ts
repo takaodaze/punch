@@ -1,5 +1,6 @@
 import { Session } from "../../domain/session.ts";
 import type { SessionRepository } from "../../domain/session-repository.ts";
+import { toZonedDateTime } from "../../shared/timezone.ts";
 
 type SessionRecord = {
   id: string;
@@ -52,9 +53,9 @@ export class FileSessionRepository implements SessionRepository {
     const records: SessionRecord[] = sessions.map(
       ({ id, clockIn, clockOut, recordedAt }) => ({
         id,
-        clockIn: clockIn.toISOString(),
-        clockOut: clockOut ? clockOut.toISOString() : null,
-        recordedAt: recordedAt.toISOString(),
+        clockIn: toIsoStringWithOffset(clockIn),
+        clockOut: clockOut ? toIsoStringWithOffset(clockOut) : null,
+        recordedAt: toIsoStringWithOffset(recordedAt),
       }),
     );
     await Deno.mkdir(dirname(this.filePath), { recursive: true });
@@ -65,4 +66,9 @@ export class FileSessionRepository implements SessionRepository {
 function dirname(path: string): string {
   const index = path.lastIndexOf("/");
   return index === -1 ? "." : path.slice(0, index);
+}
+
+/** ISO 8601 string in JST regardless of the runtime's local timezone, e.g. 2026-09-02T14:40:00.000+09:00 */
+function toIsoStringWithOffset(date: Date): string {
+  return toZonedDateTime(date).toString({ timeZoneName: "never" });
 }

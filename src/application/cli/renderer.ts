@@ -1,15 +1,18 @@
 import type { Session } from "../../domain/session.ts";
 import type { AttendanceStatus } from "../../usecase/get-status.ts";
+import { toZonedDateTime } from "../../shared/timezone.ts";
 
 const pad = (value: number) => String(value).padStart(2, "0");
 
-const date = (value: Date): string =>
-  `${value.getFullYear()}-${pad(value.getMonth() + 1)}-${pad(value.getDate())}`;
+const date = (value: Date): string => {
+  const zdt = toZonedDateTime(value);
+  return `${zdt.year}-${pad(zdt.month)}-${pad(zdt.day)}`;
+};
 
-const time = (value: Date): string =>
-  `${pad(value.getHours())}:${pad(value.getMinutes())}:${
-    pad(value.getSeconds())
-  }`;
+const time = (value: Date): string => {
+  const zdt = toZonedDateTime(value);
+  return `${pad(zdt.hour)}:${pad(zdt.minute)}:${pad(zdt.second)}`;
+};
 
 /** e.g. 9h 15m */
 const fmtMsReadableTime = (ms: number) => {

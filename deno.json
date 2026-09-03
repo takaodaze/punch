@@ -1,7 +1,8 @@
 {
   "tasks": {
     "start": "deno run --allow-read --allow-write --allow-env --allow-net=slack.com --env-file src/main.ts",
-    "check": "deno check src/main.ts"
+    "check": "deno check src/main.ts",
+    "install": "deno compile --env-file=.env --allow-read --allow-write --allow-env --allow-net=slack.com -o $HOME/.deno/bin/punch src/main.ts"
   },
   "compilerOptions": {
     "strict": true

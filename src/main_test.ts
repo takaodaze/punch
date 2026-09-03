@@ -1,5 +1,5 @@
-import { InMemorySessionRepository } from "./infra/in-memory/session-repository.ts";
-import { NoopNotifier } from "./infra/noop/notifier.ts";
+import { NoopNotifier } from "./infra/dummy/notifier.ts";
+import { InMemorySessionRepository } from "./infra/dummy/session-repository.ts";
 import { ClockInUseCase } from "./usecase/clock-in.ts";
 import { ClockOutUseCase } from "./usecase/clock-out.ts";
 import { GetHistoryUseCase } from "./usecase/get-history.ts";

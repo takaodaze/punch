@@ -9,11 +9,11 @@ export class SlackNotifier implements Notifier {
   ) {}
 
   notifyClockIn(session: Session): Promise<void> {
-    return this.send(`🟢 出勤: ${formatDateTime(session.clockIn)}`);
+    return this.send(`🧑‍💻出勤: ${formatDateTime(session.clockIn)}`);
   }
 
   notifyClockOut(session: Session): Promise<void> {
-    return this.send(`🔴 退勤: ${formatDateTime(session.clockOut!)}`);
+    return this.send(`🧘退勤: ${formatDateTime(session.clockOut!)}`);
   }
 
   private async send(text: string): Promise<void> {

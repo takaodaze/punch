@@ -13,7 +13,7 @@ export class SlackNotifier implements Notifier {
   }
 
   notifyClockOut(session: Session): Promise<void> {
-    return this.send(`🧘退勤: ${formatDateTime(session.clockOut!)}`);
+    return this.send(`💤退勤: ${formatDateTime(session.clockOut!)}`);
   }
 
   private async send(text: string): Promise<void> {

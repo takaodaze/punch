@@ -7,14 +7,17 @@ import { ClockOutUseCase } from "./usecase/clock-out.ts";
 import { GetHistoryUseCase } from "./usecase/get-history.ts";
 import { GetStatusUseCase } from "./usecase/get-status.ts";
 
-function defaultSessionsFilePath(): string {
-  const dataHome = Deno.env.get("XDG_DATA_HOME") ??
-    `${Deno.env.get("HOME")}/.local/share`;
-  return `${dataHome}/punch/sessions.json`;
+function sessionsFilePath(): string {
+  const path = Deno.env.get("PUNCH_DB_PATH");
+  if (!path) {
+    console.error("PUNCH_DB_PATH is not set. Specify it in .env or the environment.");
+    Deno.exit(1);
+  }
+  return path;
 }
 
 async function main(): Promise<void> {
-  const repository = new FileSessionRepository(defaultSessionsFilePath());
+  const repository = new FileSessionRepository(sessionsFilePath());
   const app = new CliApp(
     new RawKeyInput(),
     new Renderer(),

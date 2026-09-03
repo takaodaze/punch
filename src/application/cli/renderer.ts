@@ -1,13 +1,19 @@
 import type { Session } from "../../domain/session.ts";
 import type { AttendanceStatus } from "../../usecase/get-status.ts";
-import { formatDate as date, formatTime as time } from "../../shared/format.ts";
 
 const pad = (value: number) => String(value).padStart(2, "0");
-const duration = (from: Date, to: Date) => {
-  const minutes = Math.max(
-    0,
-    Math.floor((to.getTime() - from.getTime()) / 60_000),
-  );
+
+const date = (value: Date): string =>
+  `${value.getFullYear()}-${pad(value.getMonth() + 1)}-${pad(value.getDate())}`;
+
+const time = (value: Date): string =>
+  `${pad(value.getHours())}:${pad(value.getMinutes())}:${
+    pad(value.getSeconds())
+  }`;
+
+/** e.g. 9h 15m */
+const fmtMsReadableTime = (ms: number) => {
+  const minutes = Math.floor(ms / 60_000);
   return `${Math.floor(minutes / 60)}h ${pad(minutes % 60)}m`;
 };
 
@@ -41,6 +47,7 @@ export class Renderer {
   notWorking(): void {
     console.log("\nYou are not currently working.\n");
   }
+
   status(status: AttendanceStatus, now: Date): void {
     if (status.state === "NOT_WORKING") {
       console.log("\nSTATUS\n\n  ○ NOT WORKING\n");
@@ -49,21 +56,28 @@ export class Renderer {
     console.log(
       `\nSTATUS\n\n  ● WORKING\n\n  Clock in: ${
         time(status.session.clockIn)
-      }\n  Elapsed:  ${duration(status.session.clockIn, now)}\n`,
+      }\n  Elapsed:  ${fmtMsReadableTime(status.session.durationTime(now))}\n`,
     );
   }
+
   history(sessions: Session[], now: Date): void {
     console.log("\nHISTORY\n\nDATE        CLOCK IN    CLOCK OUT    DURATION");
+    let totalTime = 0;
+
     for (const session of sessions) {
       const out = session.clockOut;
       console.log(
         `${date(session.clockIn)}  ${time(session.clockIn)}    ${
           out ? time(out) : "--:--:--"
-        }     ${duration(session.clockIn, out ?? now)}`,
+        }     ${fmtMsReadableTime(session.durationTime(now))}`,
       );
+
+      totalTime += session.durationTime(now);
     }
-    console.log("");
+
+    console.log(`\nTOTAL: ${fmtMsReadableTime(totalTime)}\n`);
   }
+
   goodbye(): void {
     console.log("\nGoodbye.");
   }

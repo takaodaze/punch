@@ -20,6 +20,11 @@ export class Session {
   get isWorking(): boolean {
     return this.clockOut === null;
   }
+  /** Elapsed milliseconds from clock-in to clock-out, or to `now` if still working. */
+  durationTime(now: Date): number {
+    const end = this.clockOut ?? now;
+    return Math.max(0, end.getTime() - this.clockIn.getTime());
+  }
 }
 
 function createSessionId(): string {

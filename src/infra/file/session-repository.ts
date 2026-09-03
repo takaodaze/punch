@@ -5,6 +5,7 @@ type SessionRecord = {
   id: string;
   clockIn: string;
   clockOut: string | null;
+  recordedAt: string;
 };
 
 export class FileSessionRepository implements SessionRepository {
@@ -37,17 +38,25 @@ export class FileSessionRepository implements SessionRepository {
     }
     if (text.trim() === "") return [];
     const records: SessionRecord[] = JSON.parse(text);
-    return records.map(({ id, clockIn, clockOut }) =>
-      new Session(id, new Date(clockIn), clockOut ? new Date(clockOut) : null)
+    return records.map(({ id, clockIn, clockOut, recordedAt }) =>
+      new Session(
+        id,
+        new Date(clockIn),
+        clockOut ? new Date(clockOut) : null,
+        new Date(recordedAt),
+      )
     );
   }
 
   private async writeAll(sessions: Session[]): Promise<void> {
-    const records: SessionRecord[] = sessions.map(({ id, clockIn, clockOut }) => ({
-      id,
-      clockIn: clockIn.toISOString(),
-      clockOut: clockOut ? clockOut.toISOString() : null,
-    }));
+    const records: SessionRecord[] = sessions.map(
+      ({ id, clockIn, clockOut, recordedAt }) => ({
+        id,
+        clockIn: clockIn.toISOString(),
+        clockOut: clockOut ? clockOut.toISOString() : null,
+        recordedAt: recordedAt.toISOString(),
+      }),
+    );
     await Deno.mkdir(dirname(this.filePath), { recursive: true });
     await Deno.writeTextFile(this.filePath, JSON.stringify(records, null, 2));
   }

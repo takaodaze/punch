@@ -31,6 +31,9 @@ export class Renderer {
   notSupportedMenu(): void {
     console.log("\nNot supported menu\n");
   }
+  cancelled(): void {
+    console.log("\nCancelled.\n");
+  }
   clockedIn(session: Session): void {
     console.log(`\nClocked in at ${time(session.clockIn)}\n`);
   }
